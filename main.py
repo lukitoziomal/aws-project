@@ -7,11 +7,19 @@ from botocore.exceptions import ClientError
 
 class CLI(cmd.Cmd):
     prompt = ">> "
+    intro = "AWS-project. Type 'help' for available commands."
 
     def do_list(self, arg):
+        """
+        List all files in bucket. (folder hardcoded)
+        Use -a for -all flag to display all object information.
+        """
         read(s3_client, bucket_name, folder_name, arg)
 
     def do_upload(self, arg):
+        """
+        Upload file to the bucket.
+        """
         try:
             add(s3_client, bucket_name, arg)
             print(f"{arg} successfully added to the bucket.")
@@ -19,18 +27,29 @@ class CLI(cmd.Cmd):
             logging.error(e)
 
     def do_find(self, arg):
+        """
+        Find files that starts with a argument.
+        Didn't know how to implement an actual regex so it only works as a prefix.
+        """
         find(s3_client, bucket_name, "y-wing/", arg)
 
     def do_delete(self, arg):
+        """
+        Delete single file.
+        """
         delete(s3_client, bucket_name, "y-wing/" + arg)
 
     def do_purge(self, arg):
+        """
+        Delete all files that starts with an argument.
+        """
         delete_all(s3_client, bucket_name, "y-wing/", arg)
 
-    def do_test(self, arg):
-        print(arg.split(" "))
-        for a in arg:
-            print(a)
+    def do_quit(self, arg):
+        """
+        Exit
+        """
+        return True
 
 
 def read(client, b_name, f_name, *args):
